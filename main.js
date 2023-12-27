@@ -8,7 +8,8 @@ const env = await load();
 // Inspired by Ice Cubes
 // https://github.com/Dimillian/IceCubesApp/blob/5f052485236027c624bbcc3e7e3d5b043e05036e/Packages/Network/Sources/Network/OpenAIClient.swift#L81
 const PROMPT = `What’s in this image? Be brief, it's for image alt description on a social network. Don't write in the first person.`;
-const MAX_TOKENS = 50;
+const MAX_TOKENS = 85;
+const DETAIL = 'low';
 const UPLOAD_LIMIT =
   Deno.env.get('UPLOAD_LIMIT') || env.UPLOAD_LIMIT || 10 * 1024 * 1024; // 10MB
 const API_KEY = Deno.env.get('OPENAI_API_KEY') || env.OPENAI_API_KEY;
@@ -26,7 +27,10 @@ function requestVision(image_url) {
           },
           {
             type: 'image_url',
-            image_url,
+            image_url: {
+              url: image_url,
+              detail: DETAIL,
+            },
           },
         ],
       },
