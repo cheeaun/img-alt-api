@@ -87,9 +87,12 @@ app.post('/', async (c) => {
   const base64Image = encodeBase64(arrayBufferImage);
 
   // Request to OpenAI
-  const response = await requestVision(
-    `data:${image.type};base64,${base64Image}`,
-  );
+  let response;
+  try {
+    response = await requestVision(`data:${image.type};base64,${base64Image}`);
+  } catch (error) {
+    return c.json({ error: error?.message || error }, 500);
+  }
 
   const description = response?.choices?.[0]?.message?.content;
 
