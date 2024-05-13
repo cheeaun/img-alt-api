@@ -16,7 +16,7 @@ const API_KEY = Deno.env.get('OPENAI_API_KEY') || env.OPENAI_API_KEY;
 const openai = new OpenAI({ apiKey: API_KEY });
 function requestVision(image_url) {
   return openai.chat.completions.create({
-    model: 'gpt-4-vision-preview',
+    model: 'gpt-4o',
     messages: [
       {
         role: 'user',
