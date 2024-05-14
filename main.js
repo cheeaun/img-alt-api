@@ -14,27 +14,35 @@ const UPLOAD_LIMIT =
   Deno.env.get('UPLOAD_LIMIT') || env.UPLOAD_LIMIT || 10 * 1024 * 1024; // 10MB
 const API_KEY = Deno.env.get('OPENAI_API_KEY') || env.OPENAI_API_KEY;
 const openai = new OpenAI({ apiKey: API_KEY });
-function requestVision(image_url) {
+function requestVision(image_url, { lang } = {}) {
+  // lang = language code e.g. 'en'
+  const messages = [
+    {
+      role: 'user',
+      content: [
+        {
+          type: 'text',
+          text: PROMPT,
+        },
+        {
+          type: 'image_url',
+          image_url: {
+            url: image_url,
+            detail: DETAIL,
+          },
+        },
+      ],
+    },
+  ];
+  if (lang) {
+    messages.push({
+      role: 'system',
+      content: `Answer only in this language (code): "${lang}"`,
+    });
+  }
   return openai.chat.completions.create({
     model: 'gpt-4o',
-    messages: [
-      {
-        role: 'user',
-        content: [
-          {
-            type: 'text',
-            text: PROMPT,
-          },
-          {
-            type: 'image_url',
-            image_url: {
-              url: image_url,
-              detail: DETAIL,
-            },
-          },
-        ],
-      },
-    ],
+    messages,
     max_tokens: MAX_TOKENS,
   });
 }
@@ -50,10 +58,13 @@ app.use(
 
 app.get('/', async (c) => {
   const image = c.req.query('image');
+  const lang = c.req.query('lang');
   if (/https?:\/\//.test(image)) {
     let response;
     try {
-      response = await requestVision(image);
+      response = await requestVision(image, {
+        lang,
+      });
     } catch (error) {
       return c.json({ error: error?.message || error }, 500);
     }
@@ -71,6 +82,7 @@ app.get('/', async (c) => {
 
 // Image upload endpoint
 app.post('/', async (c) => {
+  const lang = c.req.query('lang');
   const { image } = await c.req.parseBody(); // File
 
   if (!image) {
@@ -89,7 +101,9 @@ app.post('/', async (c) => {
   // Request to OpenAI
   let response;
   try {
-    response = await requestVision(`data:${image.type};base64,${base64Image}`);
+    response = await requestVision(`data:${image.type};base64,${base64Image}`, {
+      lang,
+    });
   } catch (error) {
     return c.json({ error: error?.message || error }, 500);
   }
