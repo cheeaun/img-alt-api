@@ -41,7 +41,7 @@ function requestVision(image_url, { lang } = {}) {
     });
   }
   return openai.chat.completions.create({
-    model: 'gpt-4o-mini',
+    model: 'gpt-4o-2024-08-06',
     messages,
     max_tokens: MAX_TOKENS,
   });
