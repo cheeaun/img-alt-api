@@ -20,6 +20,10 @@ Add environment variable `OPENAI_API_KEY`. Could create a `.env` file and put th
 - `deno task debug` - Run the server with watch mode and debugging, for development.
 - `deno task start` - Run the server.
 
+Additional environment variables:
+
+- `OPENAI_MODEL` - OpenAI model to use, defaults to `gpt-4o`.
+
 ## REST API Endpoints
 
 - `GET /?image=<image-url>`
