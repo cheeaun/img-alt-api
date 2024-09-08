@@ -13,6 +13,8 @@ const DETAIL = 'low';
 const UPLOAD_LIMIT =
   Deno.env.get('UPLOAD_LIMIT') || env.UPLOAD_LIMIT || 10 * 1024 * 1024; // 10MB
 const API_KEY = Deno.env.get('OPENAI_API_KEY') || env.OPENAI_API_KEY;
+const MODEL = Deno.env.get('OPENAI_MODEL') || env.OPENAI_MODEL || 'gpt-4o';
+
 const openai = new OpenAI({ apiKey: API_KEY });
 function requestVision(image_url, { lang } = {}) {
   // lang = language code e.g. 'en'
@@ -41,7 +43,7 @@ function requestVision(image_url, { lang } = {}) {
     });
   }
   return openai.chat.completions.create({
-    model: 'gpt-4o',
+    model: MODEL,
     messages,
     max_tokens: MAX_TOKENS,
   });
