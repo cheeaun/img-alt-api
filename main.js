@@ -9,7 +9,6 @@ const env = await load();
 // https://github.com/Dimillian/IceCubesApp/blob/5f052485236027c624bbcc3e7e3d5b043e05036e/Packages/Network/Sources/Network/OpenAIClient.swift#L81
 const PROMPT = `What’s in this image? Be brief, it's for image alt description on a social network. Don't write in the first person.`;
 const MAX_TOKENS = 85;
-const DETAIL = 'low';
 const UPLOAD_LIMIT =
   Deno.env.get('UPLOAD_LIMIT') || env.UPLOAD_LIMIT || 10 * 1024 * 1024; // 10MB
 const API_KEY = Deno.env.get('OPENAI_API_KEY') || env.OPENAI_API_KEY;
@@ -18,34 +17,31 @@ const MODEL = Deno.env.get('OPENAI_MODEL') || env.OPENAI_MODEL || 'gpt-4.1-nano'
 const openai = new OpenAI({ apiKey: API_KEY });
 function requestVision(image_url, { lang } = {}) {
   // lang = language code e.g. 'en'
-  const messages = [
+  const input = [
     {
       role: 'user',
       content: [
         {
-          type: 'text',
+          type: 'input_text',
           text: PROMPT,
         },
         {
-          type: 'image_url',
-          image_url: {
-            url: image_url,
-            detail: DETAIL,
-          },
+          type: 'input_image',
+          image_url,
         },
       ],
     },
   ];
   if (lang) {
-    messages.push({
+    input.push({
       role: 'system',
       content: `Answer only in this language (code): "${lang}"`,
     });
   }
-  return openai.chat.completions.create({
+  return openai.responses.create({
     model: MODEL,
-    messages,
-    max_tokens: MAX_TOKENS,
+    input,
+    max_output_tokens: MAX_TOKENS,
   });
 }
 
@@ -70,7 +66,7 @@ app.get('/', async (c) => {
     } catch (error) {
       return c.json({ error: error?.message || error }, 500);
     }
-    const description = response?.choices?.[0]?.message?.content;
+    const description = response?.output_text;
     if (!description) {
       return c.json({ error: 'Failed to generate description' }, 500);
     }
@@ -79,6 +75,7 @@ app.get('/', async (c) => {
 
   return c.json({
     name: 'img-alt-api',
+    model: MODEL,
   });
 });
 
