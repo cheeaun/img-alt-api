@@ -13,7 +13,7 @@ const DETAIL = 'low';
 const UPLOAD_LIMIT =
   Deno.env.get('UPLOAD_LIMIT') || env.UPLOAD_LIMIT || 10 * 1024 * 1024; // 10MB
 const API_KEY = Deno.env.get('OPENAI_API_KEY') || env.OPENAI_API_KEY;
-const MODEL = Deno.env.get('OPENAI_MODEL') || env.OPENAI_MODEL || 'gpt-4o';
+const MODEL = Deno.env.get('OPENAI_MODEL') || env.OPENAI_MODEL || 'gpt-4.1-nano';
 
 const openai = new OpenAI({ apiKey: API_KEY });
 function requestVision(image_url, { lang } = {}) {
