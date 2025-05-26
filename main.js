@@ -107,8 +107,7 @@ app.post('/', async (c) => {
     return c.json({ error: error?.message || error }, 500);
   }
 
-  const description = response?.choices?.[0]?.message?.content;
-
+  const description = response?.output_text;
   if (!description) {
     return c.json({ error: 'Failed to generate description' }, 500);
   }
