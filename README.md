@@ -22,7 +22,7 @@ Add environment variable `OPENAI_API_KEY`. Could create a `.env` file and put th
 
 Additional environment variables:
 
-- `OPENAI_MODEL` - OpenAI model to use, defaults to `gpt-4.1-nano`.
+- `OPENAI_MODEL` - OpenAI model to use, defaults to `gpt-5-nano` with `minimal` reasoning.
 
 ## REST API Endpoints
 
