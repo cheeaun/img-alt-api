@@ -22,7 +22,33 @@ Add environment variable `OPENAI_API_KEY`. Could create a `.env` file and put th
 
 Additional environment variables:
 
-- `OPENAI_MODEL` - OpenAI model to use, defaults to `gpt-5-nano` with `minimal` reasoning.
+- `OPENAI_BASE_URL` - Custom OpenAI-compatible API base URL (e.g. `https://api.openai.com/v1`). Defaults to OpenAI's official endpoint.
+- `OPENAI_MODEL` - Model to use, defaults to `gpt-5.4-nano`.
+- `OPENAI_API_TYPE` - API style to use: `responses` (default, OpenAI Responses API) or `chat` (older `/v1/chat/completions` compatible with most other providers).
+- `MAX_TOKENS` - Maximum output tokens, defaults to `140`.
+- `UPLOAD_LIMIT` - Maximum uploaded image size in bytes, defaults to `10485760` (10MB).
+
+## Using another provider
+
+Most OpenAI-compatible providers only support the older `/v1/chat/completions` endpoint. To switch to one:
+
+1. Set `OPENAI_API_TYPE=chat`.
+2. Set `OPENAI_BASE_URL` to the provider's OpenAI-compatible base URL.
+3. Set `OPENAI_MODEL` to the provider's model name.
+4. Set `OPENAI_API_KEY` to the provider's API key.
+
+### Example: Gemini
+
+Gemini supports OpenAI-compatible requests via the [Gemini OpenAI compatibility](https://ai.google.dev/gemini-api/docs/openai) endpoint.
+
+```bash
+OPENAI_API_TYPE=chat \
+OPENAI_BASE_URL=https://generativelanguage.googleapis.com/v1beta/openai/ \
+OPENAI_MODEL=gemini-2.5-flash \
+OPENAI_API_KEY=your-gemini-api-key \
+MAX_TOKENS=1024 \
+deno task start
+```
 
 ## REST API Endpoints
 

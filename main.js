@@ -13,10 +13,56 @@ const UPLOAD_LIMIT =
   Deno.env.get('UPLOAD_LIMIT') || env.UPLOAD_LIMIT || 10 * 1024 * 1024; // 10MB
 const API_KEY = Deno.env.get('OPENAI_API_KEY') || env.OPENAI_API_KEY;
 const MODEL = Deno.env.get('OPENAI_MODEL') || env.OPENAI_MODEL || 'gpt-5.4-nano';
+const BASE_URL = Deno.env.get('OPENAI_BASE_URL') || env.OPENAI_BASE_URL;
+const API_TYPE = Deno.env.get('OPENAI_API_TYPE') || env.OPENAI_API_TYPE || 'responses';
 
-const openai = new OpenAI({ apiKey: API_KEY });
+const openai = new OpenAI({
+  apiKey: API_KEY,
+  baseURL: BASE_URL,
+});
+
+function getDescription(response) {
+  if (API_TYPE === 'chat') {
+    return response?.choices?.[0]?.message?.content;
+  }
+  return response?.output_text;
+}
+
 function requestVision(image_url, { lang } = {}) {
-  // lang = language code e.g. 'en'
+  const systemContent = lang
+    ? `Answer only in this language (code): "${lang}"`
+    : null;
+
+  if (API_TYPE === 'chat') {
+    const messages = [];
+    if (systemContent) {
+      messages.push({
+        role: 'system',
+        content: systemContent,
+      });
+    }
+    messages.push({
+      role: 'user',
+      content: [
+        {
+          type: 'text',
+          text: PROMPT,
+        },
+        {
+          type: 'image_url',
+          image_url: {
+            url: image_url,
+          },
+        },
+      ],
+    });
+    return openai.chat.completions.create({
+      model: MODEL,
+      messages,
+      max_tokens: MAX_TOKENS,
+    });
+  }
+
   const input = [
     {
       role: 'user',
@@ -35,7 +81,7 @@ function requestVision(image_url, { lang } = {}) {
   if (lang) {
     input.push({
       role: 'system',
-      content: `Answer only in this language (code): "${lang}"`,
+      content: systemContent,
     });
   }
   return openai.responses.create({
@@ -69,7 +115,7 @@ app.get('/', async (c) => {
     } catch (error) {
       return c.json({ error: error?.message || error }, 500);
     }
-    const description = response?.output_text;
+    const description = getDescription(response);
     if (!description) {
       console.error(response);
       return c.json({ error: 'Failed to generate description' }, 500);
@@ -111,7 +157,7 @@ app.post('/', async (c) => {
     return c.json({ error: error?.message || error }, 500);
   }
 
-  const description = response?.output_text;
+  const description = getDescription(response);
   if (!description) {
     return c.json({ error: 'Failed to generate description' }, 500);
   }
