@@ -1,20 +1,17 @@
-import { load } from 'https://deno.land/std/dotenv/mod.ts';
-import { encodeBase64 } from 'https://deno.land/std/encoding/base64.ts';
-import { Hono } from 'https://deno.land/x/hono/mod.ts';
-import { cors } from 'https://deno.land/x/hono/middleware.ts';
-import OpenAI from 'npm:openai';
-const env = await load();
+import { encodeBase64 } from '@std/encoding/base64';
+import { Hono } from 'hono';
+import { cors } from 'hono/cors';
+import OpenAI from 'openai';
 
 // Inspired by Ice Cubes
 // https://github.com/Dimillian/IceCubesApp/blob/5f052485236027c624bbcc3e7e3d5b043e05036e/Packages/Network/Sources/Network/OpenAIClient.swift#L81
 const PROMPT = `What’s in this image? Be brief, it's for image alt description on a social network. Don't write in the first person.`;
-const MAX_TOKENS = Deno.env.get('MAX_TOKENS') || env.MAX_TOKENS || 140;
-const UPLOAD_LIMIT =
-  Deno.env.get('UPLOAD_LIMIT') || env.UPLOAD_LIMIT || 10 * 1024 * 1024; // 10MB
-const API_KEY = Deno.env.get('OPENAI_API_KEY') || env.OPENAI_API_KEY;
-const MODEL = Deno.env.get('OPENAI_MODEL') || env.OPENAI_MODEL || 'gpt-5.4-nano';
-const BASE_URL = Deno.env.get('OPENAI_BASE_URL') || env.OPENAI_BASE_URL;
-const API_TYPE = Deno.env.get('OPENAI_API_TYPE') || env.OPENAI_API_TYPE || 'responses';
+const MAX_TOKENS = Deno.env.get('MAX_TOKENS') || 140;
+const UPLOAD_LIMIT = Deno.env.get('UPLOAD_LIMIT') || 10 * 1024 * 1024; // 10MB
+const API_KEY = Deno.env.get('OPENAI_API_KEY');
+const MODEL = Deno.env.get('OPENAI_MODEL') || 'gpt-5.4-nano';
+const BASE_URL = Deno.env.get('OPENAI_BASE_URL');
+const API_TYPE = Deno.env.get('OPENAI_API_TYPE') || 'responses';
 
 const openai = new OpenAI({
   apiKey: API_KEY,

@@ -1,7 +1,13 @@
 {
   "tasks": {
-    "dev": "deno run --allow-net --allow-read --allow-env --watch main.js",
-    "debug": "deno run --inspect-brk --allow-net --allow-read --allow-env --watch main.js",
-    "start": "deno run --allow-net --allow-read --allow-env main.js"
+    "dev": "deno run --allow-net --allow-read --allow-env --env-file --watch main.js",
+    "debug": "deno run --inspect-brk --allow-net --allow-read --allow-env --env-file --watch main.js",
+    "start": "deno run --allow-net --allow-read --allow-env --env-file main.js"
+  },
+  "imports": {
+    "@std/encoding/base64": "jsr:@std/encoding@1.0.11/base64",
+    "hono": "jsr:@hono/hono@4.13.7",
+    "hono/cors": "jsr:@hono/hono@4.13.7/cors",
+    "openai": "npm:openai@7.15.0"
   }
 }
