@@ -23,7 +23,7 @@ Add environment variable `OPENAI_API_KEY`. Could create a `.env` file and put th
 Additional environment variables:
 
 - `OPENAI_BASE_URL` - Custom OpenAI-compatible API base URL (e.g. `https://api.openai.com/v1`). Defaults to OpenAI's official endpoint.
-- `OPENAI_MODEL` - Model to use, defaults to `gpt-5.4-nano`.
+- `OPENAI_MODEL` - Model to use, defaults to `gpt-5.6-luna`.
 - `OPENAI_API_TYPE` - API style to use: `responses` (default, OpenAI Responses API) or `chat` (older `/v1/chat/completions` compatible with most other providers).
 - `MAX_TOKENS` - Maximum output tokens, defaults to `140`.
 - `UPLOAD_LIMIT` - Maximum uploaded image size in bytes, defaults to `10485760` (10MB).
