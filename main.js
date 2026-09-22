@@ -9,7 +9,7 @@ const PROMPT = `What’s in this image? Be brief, it's for image alt description
 const MAX_TOKENS = Deno.env.get('MAX_TOKENS') || 140;
 const UPLOAD_LIMIT = Deno.env.get('UPLOAD_LIMIT') || 10 * 1024 * 1024; // 10MB
 const API_KEY = Deno.env.get('OPENAI_API_KEY');
-const MODEL = Deno.env.get('OPENAI_MODEL') || 'gpt-5.6-luna';
+const MODEL = Deno.env.get('OPENAI_MODEL') || 'gpt-6-luna';
 const BASE_URL = Deno.env.get('OPENAI_BASE_URL');
 const API_TYPE = Deno.env.get('OPENAI_API_TYPE') || 'responses';
 
