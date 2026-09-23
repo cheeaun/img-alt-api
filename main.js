@@ -25,9 +25,12 @@ function getDescription(response) {
   return response?.output_text;
 }
 
+const LANG_CODE_RE = /^[a-zA-Z]{2,3}(-[a-zA-Z]{2,8})?$/;
+
 function requestVision(image_url, { lang } = {}) {
-  const systemContent = lang
-    ? `Answer only in this language (code): "${lang}"`
+  const safeLang = lang && LANG_CODE_RE.test(lang) ? lang : null;
+  const systemContent = safeLang
+    ? `Answer only in this language (code): "${safeLang}"`
     : null;
 
   if (API_TYPE === 'chat') {
@@ -75,7 +78,7 @@ function requestVision(image_url, { lang } = {}) {
       ],
     },
   ];
-  if (lang) {
+  if (systemContent) {
     input.push({
       role: 'system',
       content: systemContent,
