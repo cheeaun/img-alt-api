@@ -25,10 +25,16 @@ function getDescription(response) {
   return response?.output_text;
 }
 
-const LANG_CODE_RE = /^[a-zA-Z]{2,3}(-[a-zA-Z]{2,8})?$/;
+const LANG_CODE_RE = /^[A-Za-z]{1,8}(?:-[A-Za-z0-9]{1,8})*$/;
 
 function requestVision(image_url, { lang } = {}) {
-  const safeLang = lang && LANG_CODE_RE.test(lang) ? lang : null;
+  const normalizedLang = typeof lang === 'string' ? lang.trim() : '';
+  const safeLang =
+    normalizedLang.length > 0 &&
+    normalizedLang.length <= 35 &&
+    LANG_CODE_RE.test(normalizedLang)
+      ? normalizedLang
+      : null;
   const systemContent = safeLang
     ? `Answer only in this language (code): "${safeLang}"`
     : null;
